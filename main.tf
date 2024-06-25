@@ -43,6 +43,11 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
+variable "availability_zones" {
+  type    = list(string)
+  default = ["us-east-2a", "us-east-2b"]
+}
+
 resource "aws_vpc" "eks_vpc" {
   cidr_block = var.vpc_cidr
 
@@ -55,6 +60,7 @@ resource "aws_subnet" "eks_subnet" {
   count                   = 2
   vpc_id                  = aws_vpc.eks_vpc.id
   cidr_block              = cidrsubnet(aws_vpc.eks_vpc.cidr_block, 8, count.index)
+  availability_zone       = element(var.availability_zones, count.index)
   map_public_ip_on_launch = true
 
   tags = {
