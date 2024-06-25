@@ -20,7 +20,7 @@ variable "region" {
 }
 
 variable "cluster_name" {
-  default = "my-eks-cluster"
+  default = "new-eks-cluster"
 }
 
 variable "node_instance_type" {
@@ -40,12 +40,7 @@ variable "min_size" {
 }
 
 variable "vpc_cidr" {
-  default = "10.0.0.0/16"
-}
-
-variable "availability_zones" {
-  type    = list(string)
-  default = ["us-east-2a", "us-east-2b"]
+  default = "10.1.0.0/16"
 }
 
 resource "aws_vpc" "eks_vpc" {
@@ -60,7 +55,6 @@ resource "aws_subnet" "eks_subnet" {
   count                   = 2
   vpc_id                  = aws_vpc.eks_vpc.id
   cidr_block              = cidrsubnet(aws_vpc.eks_vpc.cidr_block, 8, count.index)
-  availability_zone       = element(var.availability_zones, count.index)
   map_public_ip_on_launch = true
 
   tags = {
